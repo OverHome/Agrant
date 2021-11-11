@@ -5,7 +5,9 @@ import hashlib
 class DBManager:
 
     def __init__(self):
-        self.title = ["id", "login", "password", "first_name", "last_name", "gender"]
+        self.user_title = ["id", "login", "password", "first_name", "last_name", "gender"]
+        self.USE_title = ["id", "russian_language", "mathematics", "physics", "chemistry", "history", "social_studies",
+                          "ICT", "biology", "geography", "foreign_languages", "literature"]
         self.conn = sqlite3.connect("agrant.db")
         self.cur = self.conn.cursor()
 
@@ -20,9 +22,21 @@ class DBManager:
             """
             self.cur.execute(sql_req, user_data)
             self.conn.commit()
+
+            self.add_user_USE(login)
             return "Пользователь создан"
         else:
             return "Имя пользователя занято"
+
+    def add_user_USE(self, login):
+        user_line = self.find_user_line(login)
+        sql_req = f"""
+        INSERT INTO USE
+        (id)
+        VALUES({user_line["id"]})
+        """
+        self.cur.execute(sql_req)
+        self.conn.commit()
 
     def in_base(self, login):
         sql_req = f"""SELECT * 
@@ -50,8 +64,8 @@ class DBManager:
         WHERE login = '{login.lower()}'
         """
         user_line = list(self.cur.execute(sql_req))[0]
-        for i in range(len(self.title)):
-            user_dict[self.title[i]] = user_line[i]
+        for i in range(len(self.user_title)):
+            user_dict[self.user_title[i]] = user_line[i]
         return user_dict
 
     def is_user(self, login, fname, lname):
@@ -92,6 +106,37 @@ class DBManager:
             return "Данные акаунта изменены"
         else:
             return "Пользователя не существует"
+
+    def set_USE_points(self, id, points):
+        sql_req = f"""
+        UPDATE USE
+        set russian_language='{points["russian_language"]}',
+        mathematics='{points["mathematics"]}',
+        physics='{points["physics"]}',
+        chemistry='{points["chemistry"]}',
+        history='{points["history"]}',
+        social_studies='{points["social_studies"]}',
+        ICT='{points["ICT"]}',
+        biology='{points["biology"]}',
+        geography='{points["geography"]}',
+        foreign_languages='{points["foreign_languages"]}',
+        literature='{points["literature"]}'
+        WHERE id = '{id}'
+        """
+        self.cur.execute(sql_req, points)
+        self.conn.commit()
+
+    def get_USE_points(self, id):
+        user_dict = {}
+        sql_req = f"""
+                SELECT * 
+                FROM USE
+                WHERE id = '{id}'
+                """
+        user_line = list(self.cur.execute(sql_req))[0]
+        for i in range(len(self.USE_title)):
+            user_dict[self.USE_title[i]] = user_line[i]
+        return user_dict
 
     @staticmethod
     def hesh(password):
