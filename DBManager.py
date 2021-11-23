@@ -1,5 +1,6 @@
 import sqlite3
 import hashlib
+import operator
 
 
 class DBManager:
@@ -10,6 +11,7 @@ class DBManager:
                           "ICT", "biology", "geography", "foreign_languages", "literature"]
 
         self.universities_title = ["id", "name", "city", "average_USE"]
+        self.universities_specialties_title = ["id", "universities_id", "specialties_code", "budget_place", "pass_mark"]
 
         self.conn = sqlite3.connect("agrant.db")
         self.cur = self.conn.cursor()
@@ -147,14 +149,31 @@ class DBManager:
                         SELECT * 
                         FROM universities
                         """
-        universities = list(self.cur.execute(sql_req))
+        universities_lines = list(self.cur.execute(sql_req))
 
-        for university in range(len(universities)):
+        for university in range(len(universities_lines)):
             university_dict = {}
             for i in range(len(self.universities_title)):
-                university_dict[self.universities_title[i]] = universities[university][i]
+                university_dict[self.universities_title[i]] = universities_lines[university][i]
             universities_array.append(university_dict)
         return universities_array
+
+    def get_specialties_in_university(self, un_id):
+        specialties_array = []
+        sql_req = f"""
+                        SELECT * 
+                        FROM universities_specialties
+                        WHERE un_id = '{un_id}'
+                        """
+        specialties_lines = list(self.cur.execute(sql_req))
+
+        for specialty in range(len(specialties_lines)):
+            specialty_dict = {}
+            for i in range(len(self.universities_specialties_title)):
+                specialty_dict[self.universities_specialties_title[i]] = specialties_lines[specialty][i]
+            specialties_array.append(specialty_dict)
+        specialties_array.sort(key=operator.itemgetter("specialties_code"))
+        return specialties_array
 
     @staticmethod
     def hesh(password):
