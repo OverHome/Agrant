@@ -8,6 +8,9 @@ class DBManager:
         self.user_title = ["id", "login", "password", "first_name", "last_name", "gender"]
         self.USE_title = ["id", "russian_language", "mathematics", "physics", "chemistry", "history", "social_studies",
                           "ICT", "biology", "geography", "foreign_languages", "literature"]
+
+        self.universities_title = ["id", "name", "city", "average_USE"]
+
         self.conn = sqlite3.connect("agrant.db")
         self.cur = self.conn.cursor()
 
@@ -137,6 +140,21 @@ class DBManager:
         for i in range(len(self.USE_title)):
             user_dict[self.USE_title[i]] = user_line[i]
         return user_dict
+
+    def get_universities(self):
+        universities_array = []
+        sql_req = f"""
+                        SELECT * 
+                        FROM universities
+                        """
+        universities = list(self.cur.execute(sql_req))
+
+        for university in range(len(universities)):
+            university_dict = {}
+            for i in range(len(self.universities_title)):
+                university_dict[self.universities_title[i]] = universities[university][i]
+            universities_array.append(university_dict)
+        return universities_array
 
     @staticmethod
     def hesh(password):
