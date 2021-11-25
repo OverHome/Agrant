@@ -16,7 +16,7 @@ class DBManager:
         self.conn = sqlite3.connect("agrant.db")
         self.cur = self.conn.cursor()
 
-    def add_user(self, login, fname, lname, password, gender):
+    def add_user(self, login, password, fname, lname,  gender):
         if not self.in_base(login):
             pas_hex = self.hesh(password)
             user_data = (login.lower(), pas_hex, fname.capitalize(), lname.capitalize(), gender)
@@ -55,7 +55,7 @@ class DBManager:
             user_line = self.find_user_line(login)
             pas_hex = self.hesh(password)
             if user_line["password"] == pas_hex:
-                return "Вход одобрен"
+                return user_line["id"]
             else:
                 return "Неверный пароль"
         else:
@@ -125,7 +125,8 @@ class DBManager:
         biology='{points["biology"]}',
         geography='{points["geography"]}',
         foreign_languages='{points["foreign_languages"]}',
-        literature='{points["literature"]}'
+        literature='{points["literature"]}',
+        achievements='{points["achievements"]}'
         WHERE id = '{id}'
         """
         self.cur.execute(sql_req, points)
