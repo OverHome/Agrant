@@ -16,7 +16,7 @@ class DBManager:
         self.conn = sqlite3.connect("agrant.db")
         self.cur = self.conn.cursor()
 
-    def add_user(self, login, password, fname, lname,  gender):
+    def add_user(self, login, password, fname, lname, gender):
         if not self.in_base(login):
             pas_hex = self.hesh(password)
             user_data = (login.lower(), pas_hex, fname.capitalize(), lname.capitalize(), gender)
@@ -50,7 +50,7 @@ class DBManager:
         """
         return bool(len(list(self.cur.execute(sql_req))))
 
-    def sing_in(self, login, password):
+    def sign_in(self, login, password):
         if self.in_base(login):
             user_line = self.find_user_line(login)
             pas_hex = self.hesh(password)
@@ -67,6 +67,18 @@ class DBManager:
         SELECT * 
         FROM users 
         WHERE login = '{login.lower()}'
+        """
+        user_line = list(self.cur.execute(sql_req))[0]
+        for i in range(len(self.user_title)):
+            user_dict[self.user_title[i]] = user_line[i]
+        return user_dict
+
+    def find_user_data(self, id):
+        user_dict = {}
+        sql_req = f"""
+        SELECT * 
+        FROM users 
+        WHERE id = '{id}'
         """
         user_line = list(self.cur.execute(sql_req))[0]
         for i in range(len(self.user_title)):
