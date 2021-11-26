@@ -8,7 +8,7 @@ class DBManager:
     def __init__(self):
         self.user_title = ["id", "login", "password", "first_name", "last_name", "gender"]
         self.USE_title = ["id", "russian_language", "mathematics", "physics", "chemistry", "history", "social_studies",
-                          "ICT", "biology", "geography", "foreign_languages", "literature"]
+                          "ICT", "biology", "geography", "foreign_languages", "literature", "achievements"]
 
         self.universities_title = ["id", "name", "city", "average_USE"]
         self.universities_specialties_title = ["id", "universities_id", "specialties_code", "budget_place", "pass_mark"]
