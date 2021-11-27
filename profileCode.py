@@ -29,6 +29,12 @@ class Login(QWidget):
             self.id.emit(result)
             self.close()
 
+    def closeEvent(self, event):
+        self.login_edit.setText('')
+        self.password_edit.setText('')
+        self.error_label.setText('')
+        event.accept()
+
 
 class Registration(QWidget):
     def __init__(self):
@@ -36,20 +42,70 @@ class Registration(QWidget):
         uic.loadUi('registrationUI.ui', self)
         self.db = DBManager()
         self.reg_complete.clicked.connect(self.trytoreg)
-        self.error_label.hide()
+        self.man_radio.toggle()
 
     def trytoreg(self):
         if self.db.add_user(self.login_edit.text(), self.password_edit.text(), self.firstname_edit.text(),
                             self.lastname_edit.text(), self.check_gender()) == 'Пользователь создан':
             self.close()
         else:
-            self.error_label.show()
+            self.error_label.setText('Такой логин уже занят!')
 
     def check_gender(self):
         if self.man_radio.isChecked():
             return 'man'
         else:
             return 'woman'
+
+    def closeEvent(self, event):
+        self.login_edit.setText('')
+        self.password_edit.setText('')
+        self.firstname_edit.setText('')
+        self.lastname_edit.setText('')
+        self.error_label.setText('')
+        self.man_radio.toggle()
+        event.accept()
+
+
+class Settings(QWidget):
+    id = QtCore.pyqtSignal(int)
+
+    def __init__(self, parent):
+        super().__init__()
+        self.ui = uic.loadUi('settingsUI.ui', self)
+        self.db = DBManager()
+        self.man_radio.toggle()
+        self.parent = parent
+        self.save_button.clicked.connect(self.apply)
+
+    def apply(self):
+        login = self.parent.login.text()
+        if self.db.change_user_data(login, self.firstname_edit.text(), self.lastname_edit.text(),
+                                    self.check_gender()) == 'Данные акаунта изменены':
+            ok = True
+        else:
+            self.error_label.setText('Ошибка')
+        if self.db.change_password(login, self.password_edit.text()) == 'Пароль изменен' and ok is True:
+            self.id.emit(self.db.find_user_line(login)['id'])
+            self.close()
+        else:
+            self.error_label.setText('Ошибка')
+
+    def check_gender(self):
+        if self.man_radio.isChecked():
+            return 'man'
+        else:
+            return 'woman'
+
+    def call(self):
+        self.show()
+
+    def closeEvent(self, event):
+        self.password_edit.setText('')
+        self.firstname_edit.setText('')
+        self.lastname_edit.setText('')
+        self.man_radio.toggle()
+        event.accept()
 
 
 class MyWidget(QMainWindow):
@@ -60,22 +116,13 @@ class MyWidget(QMainWindow):
         self.hiding(True)
         self.registr = Registration()
         self.log = Login()
+        self.settings = Settings(self)
         self.log.id[int].connect(self.apply)
+        self.settings.id[int].connect(self.apply)
         self.registr_but.clicked.connect(self.registr.show)
         self.log_but.clicked.connect(self.log.show)
-
-    def change_user_data(self):
-        if self.db.add_user(self.login_edit.text(), self.firstname_edit.text(),
-                            self.lastname_edit.text(), self.check_gender()) == "Пользователь создан":
-            self.save_condit.setText('1')
-        else:
-            self.save_condit.setText('0')
-
-    def check_gender(self):
-        if self.man_radio.isChecked():
-            return 'man'
-        else:
-            return 'woman'
+        self.editButton.clicked.connect(self.settings.call)
+        self.exitButton.clicked.connect(lambda: self.hiding(True))
 
     def hiding(self, hide):
         elements = [self.count, self.count1, self.facEdit, self.selected_fac, self.selected_vuz, self.vuzEdit,
@@ -84,9 +131,13 @@ class MyWidget(QMainWindow):
         if hide is True:
             for i in elements:
                 i.hide()
+            self.log_but.show()
+            self.registr_but.show()
         else:
             for i in elements:
                 i.show()
+            self.log_but.hide()
+            self.registr_but.hide()
 
     def apply(self, id):
         data = self.db.find_user_data(id)
@@ -98,8 +149,6 @@ class MyWidget(QMainWindow):
             self.gender.setText('Женский')
         self.login.setText(data['login'])
         self.hiding(False)
-        self.log_but.hide()
-        self.registr_but.hide()
 
 
 if __name__ == '__main__':

@@ -135,7 +135,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Такой логин уже занят!</string>
+    <string/>
    </property>
   </widget>
  </widget>
