@@ -12,6 +12,7 @@ class DBManager:
 
         self.universities_title = ["id", "name", "city", "average_USE", "logo"]
         self.universities_specialties_title = ["id", "universities_id", "specialties_code", "budget_place", "pass_mark"]
+        self.priorities_title = ["user_id", "un_sp_id", "prioritet"]
 
         self.conn = sqlite3.connect("agrant.db")
         self.cur = self.conn.cursor()
@@ -190,26 +191,139 @@ class DBManager:
 
     def get_specialties(self):
         sql_req = f"""
-                       SELECT * 
-                       FROM specialties
-                       """
+                SELECT * 
+                FROM specialties
+                """
         specialties_lines = list(self.cur.execute(sql_req))
         return specialties_lines
 
+    def set_all_priorities(self):
+        priorities = []
+        sql_req = f"""
+                        SELECT * 
+                        FROM users
+                        """
+
+        user_lins = list(self.cur.execute(sql_req))
+        for user in user_lins:
+            k = 1
+            sql_req = f"""
+                    SELECT * 
+                    FROM user_priorities_sp
+                    WHERE user_id = {user[0]}
+                    """
+            user_priorities_sp = list(self.cur.execute(sql_req))
+
+            sql_req = f"""
+                    SELECT * 
+                    FROM user_priorities_un
+                    WHERE user_id = {user[0]}
+                    """
+            user_priorities_un = list(self.cur.execute(sql_req))
+
+            for university in user_priorities_un:
+                for specialties in user_priorities_sp:
+                    sql_req = f"""
+                            SELECT * 
+                            FROM universities_specialties
+                            WHERE un_id = {university[2]}
+                            AND code = '{specialties[2]}'
+                            """
+                    combo = list(self.cur.execute(sql_req))
+                    if len(combo) > 0:
+                        priorities += [(user[0], combo[0][0], k)]
+                        k+=1
+        for prioritet in priorities:
+            sql_req = f"""
+                        INSERT INTO priorities_cash 
+                        ('user_id', 'un_sp_id', 'prioritet') 
+                        VALUES(?, ?, ?);
+                        """
+            self.cur.execute(sql_req, prioritet)
+            self.conn.commit()
+
     def get_all_priorities(self):
+        user_priorite = {}
         sql_req = f"""
                 SELECT * 
-                FROM user_priorities_sp
+                FROM priorities_cash
                 """
-        user_priorities_sp = list(self.cur.execute(sql_req))
+        priorities = list(self.cur.execute(sql_req))
+        for line in priorities:
+            if line[0] in user_priorite:
+                user_priorite[line[0]] += [line[1]]
+            else:
+                user_priorite[line[0]] = [line[1]]
+        return user_priorite
 
+    def get_all_USE(self):
+        result = {}
         sql_req = f"""
-                       SELECT * 
-                       FROM user_priorities_un
-                       """
-        user_priorities_un = list(self.cur.execute(sql_req))
+                SELECT * 
+                FROM USE
+                """
+        user_line = list(self.cur.execute(sql_req))
+        for user in range(len(user_line)):
+            user_dict = {}
+            for i in range(len(self.USE_title)):
+                if i == 0:
+                    continue
+                user_dict[self.USE_title[i]] = user_line[user][i]
+            result[user_line[user][0]] = user_dict
+        return result
 
-        return user_priorities_un, user_priorities_sp
+    def get_all_user_id(self):
+        result = []
+        sql_req = f"""
+                SELECT * 
+                FROM USE
+                """
+        user_lines = list(self.cur.execute(sql_req))
+        for user in user_lines:
+            result.append(user[0])
+        return result
+
+    def get_all_budget_place(self):
+        result = {}
+        sql_req = f"""
+                SELECT * 
+                FROM  universities_specialties
+                """
+        universities_specialties = list(self.cur.execute(sql_req))
+        for line in universities_specialties:
+            result[line[0]] = line[3]
+
+        return result
+
+    def get_all_specialties_lesson(self):
+        subjects = {}
+        subjects_of_choice = {}
+        sql_req = f"""
+                SELECT * 
+                FROM  specialties_lesson
+                """
+        specialties_lesson = list(self.cur.execute(sql_req))
+        for line in specialties_lesson:
+            if line[3] == 1:
+                if line[1] not in subjects:
+                    subjects[line[1]] = [line[2]]
+                else:
+                    subjects[line[1]] += [line[2]]
+            else:
+                if line[1] not in subjects_of_choice:
+                    subjects_of_choice[line[1]] = [line[2]]
+                else:
+                    subjects_of_choice[line[1]] += [line[2]]
+        return subjects, subjects_of_choice
+
+    def get_name_specialties(self, code):
+        sql_req = f"""
+                SELECT * 
+                FROM specialties
+                WHERE code = '{code}'
+                """
+        specialties = list(self.cur.execute(sql_req))[0]
+        return specialties[1]
 
     @staticmethod
     def hesh(password):
