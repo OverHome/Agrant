@@ -10,7 +10,7 @@ class DBManager:
         self.USE_title = ["id", "russian_language", "mathematics", "physics", "chemistry", "history", "social_studies",
                           "ICT", "biology", "geography", "foreign_languages", "literature", "achievements"]
 
-        self.universities_title = ["id", "name", "city", "average_USE"]
+        self.universities_title = ["id", "name", "city", "average_USE", "logo"]
         self.universities_specialties_title = ["id", "universities_id", "specialties_code", "budget_place", "pass_mark"]
 
         self.conn = sqlite3.connect("agrant.db")
@@ -159,9 +159,9 @@ class DBManager:
     def get_universities(self):
         universities_array = []
         sql_req = f"""
-                        SELECT * 
-                        FROM universities
-                        """
+                SELECT * 
+                FROM universities
+                """
         universities_lines = list(self.cur.execute(sql_req))
 
         for university in range(len(universities_lines)):
@@ -174,10 +174,10 @@ class DBManager:
     def get_specialties_in_university(self, un_id):
         specialties_array = []
         sql_req = f"""
-                        SELECT * 
-                        FROM universities_specialties
-                        WHERE un_id = '{un_id}'
-                        """
+                SELECT * 
+                FROM universities_specialties
+                WHERE un_id = '{un_id}'
+                """
         specialties_lines = list(self.cur.execute(sql_req))
 
         for specialty in range(len(specialties_lines)):
@@ -187,6 +187,29 @@ class DBManager:
             specialties_array.append(specialty_dict)
         specialties_array.sort(key=operator.itemgetter("specialties_code"))
         return specialties_array
+
+    def get_specialties(self):
+        sql_req = f"""
+                       SELECT * 
+                       FROM specialties
+                       """
+        specialties_lines = list(self.cur.execute(sql_req))
+        return specialties_lines
+
+    def get_all_priorities(self):
+        sql_req = f"""
+                SELECT * 
+                FROM user_priorities_sp
+                """
+        user_priorities_sp = list(self.cur.execute(sql_req))
+
+        sql_req = f"""
+                       SELECT * 
+                       FROM user_priorities_un
+                       """
+        user_priorities_un = list(self.cur.execute(sql_req))
+
+        return user_priorities_un, user_priorities_sp
 
     @staticmethod
     def hesh(password):
