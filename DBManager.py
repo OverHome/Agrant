@@ -1,6 +1,7 @@
 import sqlite3
 import hashlib
 import operator
+from Agregator import Agregator
 
 
 class DBManager:
@@ -13,6 +14,8 @@ class DBManager:
         self.universities_title = ["id", "name", "city", "average_USE", "logo"]
         self.universities_specialties_title = ["id", "universities_id", "specialties_code", "budget_place", "pass_mark"]
         self.priorities_title = ["user_id", "un_sp_id", "prioritet"]
+
+        self.agregator = Agregator()
 
         self.conn = sqlite3.connect("agrant.db")
         self.cur = self.conn.cursor()
@@ -144,6 +147,29 @@ class DBManager:
         """
         self.cur.execute(sql_req, points)
         self.conn.commit()
+        self.agregator.distribution()
+
+    def set_universities_priorities(self, user_id, universities_priorities):
+        sql_req = f"""
+                INSERT INTO user_priorities_un 
+                ('user_id', 'university', 'priorities') 
+                VALUES(?, ?, ?);
+                """
+        for i in universities_priorities:
+            self.cur.execute(sql_req, (user_id, universities_priorities[i], i + 1))
+            self.conn.commit()
+        self.agregator.distribution()
+
+    def set_specialties_priorities(self, user_id, specialties_priorities):
+        sql_req = f"""
+                INSERT INTO user_priorities_sp
+                ('user_id', 'specialties', 'priorities') 
+                VALUES(?, ?, ?);
+                """
+        for i in specialties_priorities:
+            self.cur.execute(sql_req, (user_id, specialties_priorities[i], i + 1))
+            self.conn.commit()
+        self.agregator.distribution()
 
     def get_USE_points(self, id):
         user_dict = {}
@@ -232,7 +258,7 @@ class DBManager:
                     combo = list(self.cur.execute(sql_req))
                     if len(combo) > 0:
                         priorities += [(user[0], combo[0][0], k)]
-                        k+=1
+                        k += 1
         for prioritet in priorities:
             sql_req = f"""
                         INSERT INTO priorities_cash 
@@ -324,6 +350,53 @@ class DBManager:
                 """
         specialties = list(self.cur.execute(sql_req))[0]
         return specialties[1]
+
+    def set_enlisted_user(self, specialties_users):
+        sql_req = f"""
+                DELETE
+                FROM enlisted_user
+                """
+        self.cur.execute(sql_req)
+        self.conn.commit()
+
+        for specialtie in specialties_users:
+            for data in specialties_users[specialtie]:
+                sql_req = f"""
+                        INSERT INTO enlisted_user 
+                        ('id', 'user_id', 'points') 
+                        VALUES(?, ?, ?);
+                        """
+                self.cur.execute(sql_req, (specialtie, data[0], data[1]))
+                self.conn.commit()
+
+    def get_enlisted_user(self, un_id, code):
+        enlisted_user = []
+        sql_req = f"""
+                SELECT * 
+                FROM universities_specialties
+                WHERE un_id = {un_id}
+                AND code = '{code}'
+                """
+        enlisted_user_id = list(self.cur.execute(sql_req))[0][0]
+        sql_req = f"""
+                       SELECT * 
+                       FROM enlisted_user
+                       WHERE id = {enlisted_user_id}
+                       """
+        enlisted_users = list(self.cur.execute(sql_req))
+        k = 1
+        for line in enlisted_users:
+            sql_req = f"""
+                    SELECT * 
+                    FROM users
+                    WHERE id = {line[1]}
+                    """
+            user_line = list(self.cur.execute(sql_req))[0]
+            fname = user_line[3]
+            lname = user_line[4]
+            enlisted_user.append({"id": k, "fname": fname, "lname": lname, "points": line[2]})
+            k += 1
+        return enlisted_user
 
     @staticmethod
     def hesh(password):
