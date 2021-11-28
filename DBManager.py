@@ -1,8 +1,6 @@
 import sqlite3
 import hashlib
 import operator
-from Agregator import Agregator
-
 
 class DBManager:
 
@@ -14,8 +12,8 @@ class DBManager:
         self.universities_title = ["id", "name", "city", "average_USE", "logo"]
         self.universities_specialties_title = ["id", "universities_id", "specialties_code", "budget_place", "pass_mark"]
         self.priorities_title = ["user_id", "un_sp_id", "prioritet"]
-
-        self.agregator = Agregator()
+        self.specialties_priorities_title = ["id", "user_id", "specialties", "priorities"]
+        self.universities_priorities_title = ["id", "user_id", "university", "priorities"]
 
         self.conn = sqlite3.connect("agrant.db")
         self.cur = self.conn.cursor()
@@ -147,9 +145,16 @@ class DBManager:
         """
         self.cur.execute(sql_req, points)
         self.conn.commit()
-        self.agregator.distribution()
 
     def set_universities_priorities(self, user_id, universities_priorities):
+        sql_req = f"""
+                DELETE
+                FROM user_priorities_un
+                WHERE user_id ={user_id} 
+                """
+        self.cur.execute(sql_req)
+        self.conn.commit()
+
         sql_req = f"""
                 INSERT INTO user_priorities_un 
                 ('user_id', 'university', 'priorities') 
@@ -158,9 +163,16 @@ class DBManager:
         for i in universities_priorities:
             self.cur.execute(sql_req, (user_id, universities_priorities[i], i + 1))
             self.conn.commit()
-        self.agregator.distribution()
 
     def set_specialties_priorities(self, user_id, specialties_priorities):
+        sql_req = f"""
+                DELETE
+                FROM user_priorities_sp
+                WHERE user_id ={user_id} 
+                """
+        self.cur.execute(sql_req)
+        self.conn.commit()
+
         sql_req = f"""
                 INSERT INTO user_priorities_sp
                 ('user_id', 'specialties', 'priorities') 
@@ -169,7 +181,36 @@ class DBManager:
         for i in specialties_priorities:
             self.cur.execute(sql_req, (user_id, specialties_priorities[i], i + 1))
             self.conn.commit()
-        self.agregator.distribution()
+
+    def get_universities_priorities(self, user_id):
+        universities_priorities = []
+        sql_req = f"""
+                SELECT * 
+                FROM user_priorities_un
+                WHERE user_id = {user_id}
+                       """
+        universities_priorities_lines = list(self.cur.execute(sql_req))
+        for line in universities_priorities_lines:
+            res = {}
+            for i in range(len(self.universities_priorities_title)):
+                res[self.universities_priorities_title[i]] = line[i]
+            universities_priorities += [res]
+        return universities_priorities
+
+    def get_specialties_priorities(self, user_id):
+        specialties_priorities = []
+        sql_req = f"""
+                SELECT * 
+                FROM user_priorities_sp
+                WHERE user_id = {user_id}
+                       """
+        specialties_priorities_lines = list(self.cur.execute(sql_req))
+        for line in specialties_priorities_lines:
+            res = {}
+            for i in range(len(self.specialties_priorities_title)):
+                res[self.specialties_priorities_title[i]] = line[i]
+            specialties_priorities += [res]
+        return specialties_priorities
 
     def get_USE_points(self, id):
         user_dict = {}
