@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>498</width>
+    <width>476</width>
     <height>447</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>ScrollArea</string>
@@ -21,16 +27,16 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>496</width>
+     <width>474</width>
      <height>445</height>
     </rect>
    </property>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>0</x>
       <y>10</y>
-      <width>411</width>
+      <width>471</width>
       <height>51</height>
      </rect>
     </property>
@@ -43,6 +49,9 @@
     </property>
     <property name="text">
      <string>Редактирование баллов</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QWidget" name="formLayoutWidget">

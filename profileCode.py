@@ -142,6 +142,10 @@ class Settings(QWidget):
             return 'woman'
 
     def call(self):
+        self.firstname_edit.setText(self.parent.name_label.text().split()[0])
+        self.lastname_edit.setText(self.parent.name_label.text().split()[1])
+        if self.parent.gender.text() == 'Женский':
+            self.woman_radio.toggle()
         self.show()
 
     def closeEvent(self, event):
@@ -264,7 +268,8 @@ class UnivPriority(QWidget):
             z = self.priority_list
 
     def save(self):
-        self.db.set_universities_priorities(self.parent.id, self.priority_list)
+        result = [int(item) for item in self.priority_list]
+        self.db.set_universities_priorities(self.parent.id, result)
         self.close()
 
     def addremove(self):
@@ -289,6 +294,7 @@ class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('profileUI.ui', self)
+        self.setFixedSize(921, 651)
         self.db = DBManager()
         self.hiding(True)
         self.registr = Registration()
