@@ -50,7 +50,7 @@
      <rect>
       <x>-30</x>
       <y>90</y>
-      <width>292</width>
+      <width>298</width>
       <height>344</height>
      </rect>
     </property>
@@ -83,7 +83,11 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QSpinBox" name="rus_spin"/>
+      <widget class="QSpinBox" name="rus_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="phys_label">
@@ -194,34 +198,74 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QSpinBox" name="maths_spin"/>
+      <widget class="QSpinBox" name="maths_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QSpinBox" name="phys_spin"/>
+      <widget class="QSpinBox" name="phys_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QSpinBox" name="chem_spin"/>
+      <widget class="QSpinBox" name="chem_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QSpinBox" name="history_spin"/>
+      <widget class="QSpinBox" name="history_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="5" column="1">
-      <widget class="QSpinBox" name="obs_spin"/>
+      <widget class="QSpinBox" name="obs_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="6" column="1">
-      <widget class="QSpinBox" name="it_spin"/>
+      <widget class="QSpinBox" name="it_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="7" column="1">
-      <widget class="QSpinBox" name="biol_spin"/>
+      <widget class="QSpinBox" name="biol_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="8" column="1">
-      <widget class="QSpinBox" name="geog_spin"/>
+      <widget class="QSpinBox" name="geog_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="9" column="1">
-      <widget class="QSpinBox" name="eng_spin"/>
+      <widget class="QSpinBox" name="eng_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="10" column="1">
-      <widget class="QSpinBox" name="liter_spin"/>
+      <widget class="QSpinBox" name="liter_spin">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+      </widget>
      </item>
      <item row="11" column="0">
       <widget class="QLabel" name="label">
@@ -236,7 +280,11 @@
       </widget>
      </item>
      <item row="11" column="1">
-      <widget class="QSpinBox" name="achiv_spin"/>
+      <widget class="QSpinBox" name="achiv_spin">
+       <property name="maximum">
+        <number>10</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

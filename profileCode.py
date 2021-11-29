@@ -3,8 +3,8 @@ from PIL import Image
 from PIL.ImageQt import ImageQt
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QPixmap, QFont
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QLabel, QWidget, QScrollArea, QFormLayout, \
-    QPushButton, QComboBox, QGridLayout, QVBoxLayout, QCheckBox
+from PyQt5.QtWidgets import *
+
 from DBManager import DBManager
 
 
@@ -14,6 +14,7 @@ class Login(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi('loginUI.ui', self)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
         self.enterButton.clicked.connect(self.check)
         self.error_label.hide()
@@ -41,6 +42,7 @@ class Registration(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi('registrationUI.ui', self)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
         self.reg_complete.clicked.connect(self.trytoreg)
         self.man_radio.toggle()
@@ -72,6 +74,7 @@ class Special(QScrollArea):
     def __init__(self, parent):
         super().__init__()
         self.ui = uic.loadUi('specUi.ui', self)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
         self.save_button.clicked.connect(lambda: self.save())
         self.parent = parent
@@ -113,6 +116,7 @@ class Settings(QWidget):
     def __init__(self, parent):
         super().__init__()
         self.ui = uic.loadUi('settingsUI.ui', self)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
         self.man_radio.toggle()
         self.parent = parent
@@ -152,6 +156,7 @@ class SpecPriority(QWidget):
     def __init__(self, parent):
         super().__init__()
         uic.loadUi('specpriorityUI.ui', self)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
         self.parent = parent
         self.priority_list = []
@@ -169,7 +174,6 @@ class SpecPriority(QWidget):
         self.scroll_area2.setWidgetResizable(True)
 
         self.priority_list = []
-        self.time_list = []
 
     def load(self):
         self.priority_list.clear()
@@ -186,7 +190,7 @@ class SpecPriority(QWidget):
         y = self.db.get_specialties()
         for i in y:
             label = QCheckBox()
-            label.setText(i[0] + ' - ' + i[1])
+            label.setText(str(i[0]) + ' - ' + i[1])
             if i[0] in self.priority_list:
                 label.toggle()
             label.stateChanged.connect(self.addremove)
@@ -195,7 +199,6 @@ class SpecPriority(QWidget):
     def save(self):
         self.db.set_specialties_priorities(self.parent.id, self.priority_list)
         self.close()
-
 
     def addremove(self):
         if self.sender().isChecked():
@@ -215,6 +218,72 @@ class SpecPriority(QWidget):
         event.accept()
 
 
+class UnivPriority(QWidget):
+    def __init__(self, parent):
+        super().__init__()
+        uic.loadUi('univpriorityUI.ui', self)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.db = DBManager()
+        self.parent = parent
+        self.priority_list = []
+        self.save_button.clicked.connect(self.save)
+        widget = QWidget()
+        self.layout = QVBoxLayout(widget)
+        self.layout.setAlignment(QtCore.Qt.AlignTop)
+        self.scroll_area.setWidget(widget)
+        self.scroll_area.setWidgetResizable(True)
+
+        widget1 = QWidget()
+        self.layout1 = QVBoxLayout(widget1)
+        self.layout1.setAlignment(QtCore.Qt.AlignTop)
+        self.scroll_area2.setWidget(widget1)
+        self.scroll_area2.setWidgetResizable(True)
+
+        self.priority_list = []
+
+    def load(self):
+        self.priority_list.clear()
+        for i in reversed(range(self.layout1.count())):
+            self.layout1.itemAt(i).widget().setParent(None)
+        for i in reversed(range(self.layout.count())):
+            self.layout.itemAt(i).widget().setParent(None)
+        x = self.db.get_universities_priorities(self.parent.id)
+        for i in x:
+            self.priority_list.append(i['university'])
+            label1 = QLabel()
+            label1.setText(str(i['university']) + '. ' + self.db.get_university_name(i['university']))
+            self.layout1.addWidget(label1)
+        y = self.db.get_universities()
+        for i in y:
+            label = QCheckBox()
+            label.setText(str(i['id']) + '. ' + i['name'])
+            if str(i['id']) in self.priority_list:
+                label.toggle()
+            label.stateChanged.connect(self.addremove)
+            self.layout.addWidget(label)
+            z = self.priority_list
+
+    def save(self):
+        self.db.set_universities_priorities(self.parent.id, self.priority_list)
+        self.close()
+
+    def addremove(self):
+        if self.sender().isChecked():
+            self.priority_list.append(self.sender().text()[:1])
+            self.layout1.addWidget(QLabel(self.sender().text()))
+        else:
+            self.priority_list.remove(self.sender().text()[:1])
+            for i in reversed(range(self.layout1.count())):
+                self.layout1.itemAt(i).widget().setParent(None)
+            for i in self.priority_list:
+                label = QLabel()
+                label.setText(str(i) + '. ' + self.db.get_university_name(i))
+                self.layout1.addWidget(label)
+
+    def closeEvent(self, event):
+        self.load()
+        event.accept()
+
 
 class MyWidget(QMainWindow):
     def __init__(self):
@@ -227,6 +296,7 @@ class MyWidget(QMainWindow):
         self.spec = Special(self)
         self.id = 3000
         self.specprior = SpecPriority(self)
+        self.univprior = UnivPriority(self)
         self.settings = Settings(self)
         self.log.id[int].connect(self.apply)
         self.settings.id[int].connect(self.apply)
@@ -235,6 +305,7 @@ class MyWidget(QMainWindow):
         self.editButton.clicked.connect(self.settings.call)
         self.exitButton.clicked.connect(lambda: self.hiding(True))
         self.facButton.clicked.connect(lambda: self.specpr())
+        self.vuzButton.clicked.connect(lambda: self.univpr())
 
         widget = QWidget()
         layout = QGridLayout(widget)
@@ -267,7 +338,12 @@ class MyWidget(QMainWindow):
         self.specprior.load()
         self.specprior.show()
 
+    def univpr(self):
+        self.univprior.load()
+        self.univprior.show()
+
     def set_univ(self, i):
+        self.heading_univ.setText(self.sender().text()[3:])
         univ_id = self.sender().text()[:1]
         self.tabWidget.setCurrentIndex(1)
         spec = self.db.get_specialties_in_university(univ_id)
@@ -286,11 +362,12 @@ class MyWidget(QMainWindow):
         l1.setFont(QFont('MS Shell Dlg 2', 14))
         l2.setFont(QFont('MS Shell Dlg 2', 14))
         l3.setFont(QFont('MS Shell Dlg 2', 14))
+        l1.setAlignment(QtCore.Qt.AlignCenter)
         self.layout1.addWidget(l1, 0, 0)
         self.layout1.addWidget(l2, 0, 1)
         self.layout1.addWidget(l3, 0, 2)
         for i in spec:
-            label = QLabel()
+            label = QPushButton()
             label1 = QLabel()
             label2 = QLabel()
 
