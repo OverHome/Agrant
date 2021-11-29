@@ -2,6 +2,7 @@ import sqlite3
 import hashlib
 import operator
 
+
 class DBManager:
 
     def __init__(self):
@@ -161,7 +162,7 @@ class DBManager:
                 VALUES(?, ?, ?);
                 """
         for i in range(len(universities_priorities)):
-            self.cur.execute(sql_req, (user_id, universities_priorities[i], i + 1))
+            self.cur.execute(sql_req, (user_id, universities_priorities[i], i))
             self.conn.commit()
 
     def set_specialties_priorities(self, user_id, specialties_priorities):
@@ -179,7 +180,7 @@ class DBManager:
                 VALUES(?, ?, ?);
                 """
         for i in range(len(specialties_priorities)):
-            self.cur.execute(sql_req, (user_id, specialties_priorities[i], i + 1))
+            self.cur.execute(sql_req, (user_id, specialties_priorities[i], i))
             self.conn.commit()
 
     def get_universities_priorities(self, user_id):
@@ -255,6 +256,15 @@ class DBManager:
             specialties_array.append(specialty_dict)
         specialties_array.sort(key=operator.itemgetter("specialties_code"))
         return specialties_array
+
+    def get_university_name(self, un_id):
+        sql_req = f"""
+                        SELECT * 
+                        FROM universities
+                        WHERE id = '{un_id}'
+                        """
+        university_name = list(self.cur.execute(sql_req))[0][1]
+        return university_name
 
     def get_specialties(self):
         sql_req = f"""
