@@ -261,7 +261,7 @@ class UnivPriority(QWidget):
         for i in y:
             label = QCheckBox()
             label.setText(str(i['id']) + '. ' + i['name'])
-            if str(i['id']) in self.priority_list:
+            if i['id'] in self.priority_list:
                 label.toggle()
             label.stateChanged.connect(self.addremove)
             self.layout.addWidget(label)
@@ -274,10 +274,10 @@ class UnivPriority(QWidget):
 
     def addremove(self):
         if self.sender().isChecked():
-            self.priority_list.append(self.sender().text()[:1])
+            self.priority_list.append(int(self.sender().text().split('.')[0]))
             self.layout1.addWidget(QLabel(self.sender().text()))
         else:
-            self.priority_list.remove(self.sender().text()[:1])
+            self.priority_list.remove(int(self.sender().text().split('.')[0]))
             for i in reversed(range(self.layout1.count())):
                 self.layout1.itemAt(i).widget().setParent(None)
             for i in self.priority_list:

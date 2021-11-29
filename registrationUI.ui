@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>327</height>
+    <height>322</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -246,7 +246,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Зарегестрироваться</string>
+    <string>Зарегистрироваться</string>
    </property>
   </widget>
   <widget class="QLabel" name="error_label">
