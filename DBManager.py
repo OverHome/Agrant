@@ -160,7 +160,7 @@ class DBManager:
                 ('user_id', 'university', 'priorities') 
                 VALUES(?, ?, ?);
                 """
-        for i in universities_priorities:
+        for i in range(len(universities_priorities)):
             self.cur.execute(sql_req, (user_id, universities_priorities[i], i + 1))
             self.conn.commit()
 
@@ -178,7 +178,7 @@ class DBManager:
                 ('user_id', 'specialties', 'priorities') 
                 VALUES(?, ?, ?);
                 """
-        for i in specialties_priorities:
+        for i in range(len(specialties_priorities)):
             self.cur.execute(sql_req, (user_id, specialties_priorities[i], i + 1))
             self.conn.commit()
 
