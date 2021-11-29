@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
-    <height>456</height>
+    <width>932</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="font">
@@ -26,15 +26,111 @@
       <x>0</x>
       <y>0</y>
       <width>921</width>
-      <height>521</height>
+      <height>741</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>Список ВУЗов</string>
+     </attribute>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>60</y>
+        <width>921</width>
+        <height>581</height>
+       </rect>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>919</width>
+         <height>579</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>0</y>
+        <width>231</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>22</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Список ВУЗов</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_4">
+     <attribute name="title">
+      <string>Выбранный ВУЗ</string>
+     </attribute>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>0</y>
+        <width>261</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>22</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Выбранный ВУЗ</string>
+      </property>
+     </widget>
+     <widget class="QScrollArea" name="scrollArea_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>901</width>
+        <height>441</height>
+       </rect>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>899</width>
+         <height>439</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </widget>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Tab 1</string>
+      <string>Профиль</string>
      </attribute>
      <widget class="QPushButton" name="editButton">
       <property name="geometry">
@@ -67,32 +163,6 @@
        <string>Выход</string>
       </property>
      </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>50</y>
-        <width>231</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLabel" name="firstname_label">
-         <property name="text">
-          <string>Имя</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="lastname_label">
-         <property name="text">
-          <string>Фамилия</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QLabel" name="photoLabel">
       <property name="geometry">
        <rect>
@@ -114,114 +184,6 @@
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
-     </widget>
-     <widget class="QWidget" name="formLayoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>310</x>
-        <y>200</y>
-        <width>385</width>
-        <height>160</height>
-       </rect>
-      </property>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="sizeConstraint">
-        <enum>QLayout::SetDefaultConstraint</enum>
-       </property>
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-       </property>
-       <property name="rowWrapPolicy">
-        <enum>QFormLayout::DontWrapRows</enum>
-       </property>
-       <property name="labelAlignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="formAlignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="count">
-         <property name="text">
-          <string>· Баллы ЕГЭ:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="count1">
-         <property name="text">
-          <string>58</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="selected_vuz">
-         <property name="text">
-          <string>· Выбранный ВУЗ:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="vuzEdit">
-         <item>
-          <property name="text">
-           <string>Первый ВУЗ</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Второй ВУЗ</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Третий ВУЗ</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Четвертый ВУЗ</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="selected_fac">
-         <property name="text">
-          <string>· Выбранный факультет:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="facEdit">
-         <item>
-          <property name="text">
-           <string>Русский язык</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Математика</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Физика</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Химия</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>История</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
      </widget>
      <widget class="QPushButton" name="registr_but">
       <property name="geometry">
@@ -304,11 +266,78 @@
        <string/>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Tab 2</string>
-     </attribute>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>0</y>
+        <width>231</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>22</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Профиль</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pointsButton">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>350</y>
+        <width>251</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Редактирование баллов</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="facButton">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>420</y>
+        <width>251</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Приоритет факультетов</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="vuzButton">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>490</y>
+        <width>251</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Приоритет ВУЗов</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="name_label">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>50</y>
+        <width>229</width>
+        <height>39</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Имя Фамилия</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
