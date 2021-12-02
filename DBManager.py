@@ -402,6 +402,15 @@ class DBManager:
         specialties = list(self.cur.execute(sql_req))[0]
         return specialties[1]
 
+    def get_code_specialties(self, name):
+        sql_req = f"""
+                SELECT * 
+                FROM specialties
+                WHERE name = '{name}'
+                """
+        specialties = list(self.cur.execute(sql_req))[0]
+        return specialties[0]
+
     def set_enlisted_user(self, specialties_users):
         sql_req = f"""
                 DELETE

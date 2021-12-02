@@ -290,6 +290,58 @@ class UnivPriority(QWidget):
         event.accept()
 
 
+class Names(QScrollArea):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('namesUI.ui', self)
+        self.db = DBManager()
+        widget = QWidget()
+        self.layout = QGridLayout(widget)
+        self.layout.setAlignment(QtCore.Qt.AlignTop)
+        self.scrollArea.setWidget(widget)
+        self.scrollArea.setWidgetResizable(True)
+
+    def update(self, id, code):
+        self.heading.setText(self.db.get_name_specialties(code))
+        names = self.db.get_enlisted_user(id, code)
+        l1 = QLabel()
+        l2 = QLabel()
+        l1.setText('Имя Фамилия')
+        l2.setText('Баллы')
+        l1.setStyleSheet("border: 3px solid black;")
+        l2.setStyleSheet("border: 3px solid black;")
+        l1.setFont(QFont('MS Shell Dlg 2', 14))
+        l2.setFont(QFont('MS Shell Dlg 2', 14))
+        self.layout.addWidget(l1, 0, 0)
+        self.layout.addWidget(l2, 0, 1)
+        x = 1
+        for i in range(len(names)):
+            label = QLabel()
+            label1 = QLabel()
+            label.setFont(QFont('MS Shell Dlg 2', 14))
+            label1.setFont(QFont('MS Shell Dlg 2', 14))
+            label.setText(names[i]['fname'] + ' ' + names[i]['lname'])
+            label1.setText(str(names[i]['points']))
+            self.layout.addWidget(label, x, 0)
+            self.layout.addWidget(label1, x, 1)
+            x += 1
+
+    def closeEvent(self, event):
+        for i in reversed(range(self.layout.count())):
+            self.layout.itemAt(i).widget().setParent(None)
+        l1 = QLabel()
+        l2 = QLabel()
+        l1.setText('Имя Фамилия')
+        l2.setText('Баллы')
+        l1.setStyleSheet("border: 3px solid black;")
+        l2.setStyleSheet("border: 3px solid black;")
+        l1.setFont(QFont('MS Shell Dlg 2', 14))
+        l2.setFont(QFont('MS Shell Dlg 2', 14))
+        self.layout.addWidget(l1, 0, 0)
+        self.layout.addWidget(l2, 0, 1)
+        event.accept
+
+
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -300,6 +352,7 @@ class MyWidget(QMainWindow):
         self.registr = Registration()
         self.log = Login()
         self.spec = Special(self)
+        self.names = Names()
         self.id = 3000
         self.specprior = SpecPriority(self)
         self.univprior = UnivPriority(self)
@@ -350,7 +403,7 @@ class MyWidget(QMainWindow):
 
     def set_univ(self, i):
         self.heading_univ.setText(self.sender().text()[3:])
-        univ_id = self.sender().text()[:1]
+        univ_id = self.sender().text().split('.')[0]
         self.tabWidget.setCurrentIndex(1)
         spec = self.db.get_specialties_in_university(univ_id)
         for i in reversed(range(self.layout1.count())):
@@ -373,17 +426,26 @@ class MyWidget(QMainWindow):
         self.layout1.addWidget(l2, 0, 1)
         self.layout1.addWidget(l3, 0, 2)
         for i in spec:
-            label = QPushButton()
+            spec_name = QPushButton()
             label1 = QLabel()
             label2 = QLabel()
 
-            label.setText(self.db.get_name_specialties(i['specialties_code']))
+            spec_name.setText(self.db.get_name_specialties(i['specialties_code']))
+            spec_name.clicked.connect(lambda: self.name_update(univ_id))
             label1.setText(str(i['budget_place']))
             label2.setText(str(i['pass_mark']))
-            self.layout1.addWidget(label, x, 0)
+            self.layout1.addWidget(spec_name, x, 0)
             self.layout1.addWidget(label1, x, 1)
             self.layout1.addWidget(label2, x, 2)
             x += 1
+
+    def name_update(self, id):
+        if self.sender().text().split('.')[0] == id:
+            pass
+        else:
+            code = self.db.get_code_specialties(self.sender().text())
+        self.names.update(id, code)
+        self.names.show()
 
     def special(self):
         self.spec.update()
