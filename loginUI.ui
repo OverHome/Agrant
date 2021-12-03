@@ -114,7 +114,7 @@
   <widget class="QPushButton" name="enterButton">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>110</x>
      <y>160</y>
      <width>151</width>
      <height>51</height>
@@ -132,9 +132,9 @@
   <widget class="QLabel" name="error_label">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>10</x>
      <y>220</y>
-     <width>171</width>
+     <width>341</width>
      <height>21</height>
     </rect>
    </property>
@@ -145,6 +145,9 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

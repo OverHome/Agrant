@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>597</width>
-    <height>504</height>
+    <width>803</width>
+    <height>701</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,17 +21,17 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>595</width>
-     <height>502</height>
+     <width>801</width>
+     <height>699</height>
     </rect>
    </property>
    <widget class="QScrollArea" name="scrollArea">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>571</width>
-      <height>391</height>
+      <x>0</x>
+      <y>140</y>
+      <width>801</width>
+      <height>561</height>
      </rect>
     </property>
     <property name="widgetResizable">
@@ -42,8 +42,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>569</width>
-       <height>389</height>
+       <width>799</width>
+       <height>559</height>
       </rect>
      </property>
     </widget>
@@ -53,8 +53,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>591</width>
-      <height>51</height>
+      <width>801</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="font">
@@ -69,6 +69,9 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="lesson_label">
