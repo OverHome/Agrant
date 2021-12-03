@@ -1,3 +1,4 @@
+import threading
 from DBManager import DBManager
 
 
@@ -16,6 +17,7 @@ class Agregator:
                         10: "foreign_languages",
                         11: "literature",
                         12: "achievements"}
+        self.in_progress = False
 
     def set_data(self):
         self.db = DBManager()
@@ -38,7 +40,13 @@ class Agregator:
         sm += mx + self.users_USE[user][self.lessons[12]]
         return sm
 
-    async def distribution(self):
+    def start_distribution(self):
+        if not self.in_progress:
+            self.in_progress = True
+            thread_distribution = threading.Thread(target=self.distribution)
+            thread_distribution.start()
+
+    def distribution(self):
         self.set_data()
         specialties_users = {}
         specialties_keys = list(self.universities_specialties_budget_place.keys())
@@ -75,3 +83,4 @@ class Agregator:
                         failed_user_temp += [user]
             ln = len(failed_user)
         self.db.set_enlisted_user(specialties_users)
+        self.in_progress = False

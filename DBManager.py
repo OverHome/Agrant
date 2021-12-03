@@ -146,6 +146,7 @@ class DBManager:
         """
         self.cur.execute(sql_req, points)
         self.conn.commit()
+        self.set_user_priorities(id)
 
     def set_universities_priorities(self, user_id, universities_priorities):
         sql_req = f"""
@@ -164,6 +165,7 @@ class DBManager:
         for i in range(len(universities_priorities)):
             self.cur.execute(sql_req, (user_id, universities_priorities[i], i))
             self.conn.commit()
+        self.set_user_priorities(user_id)
 
     def set_specialties_priorities(self, user_id, specialties_priorities):
         sql_req = f"""
@@ -182,6 +184,7 @@ class DBManager:
         for i in range(len(specialties_priorities)):
             self.cur.execute(sql_req, (user_id, specialties_priorities[i], i))
             self.conn.commit()
+        self.set_user_priorities(user_id)
 
     def get_universities_priorities(self, user_id):
         universities_priorities = []
@@ -273,6 +276,53 @@ class DBManager:
                 """
         specialties_lines = list(self.cur.execute(sql_req))
         return specialties_lines
+
+    def set_user_priorities(self, user_id):
+        priorities = []
+        sql_req = f"""
+                SELECT * 
+                FROM user_priorities_sp
+                WHERE user_id = {user_id}
+                """
+        user_priorities_sp = list(self.cur.execute(sql_req))
+
+        sql_req = f"""
+                SELECT * 
+                FROM user_priorities_un
+                WHERE user_id = {user_id}
+                """
+        user_priorities_un = list(self.cur.execute(sql_req))
+        k = 0
+        for university in user_priorities_un:
+            for specialties in user_priorities_sp:
+
+                sql_req = f"""
+                        SELECT * 
+                        FROM universities_specialties
+                        WHERE un_id = {university[2]}
+                        AND code = '{specialties[2]}'
+                        """
+                combo = list(self.cur.execute(sql_req))
+                if len(combo) > 0:
+                    priorities += [(user_id, combo[0][0], k)]
+                    k += 1
+
+        sql_req = f"""
+                        DELETE
+                        FROM priorities_cash
+                        WHERE user_id = {user_id}
+                        """
+        self.cur.execute(sql_req)
+        self.conn.commit()
+
+        for prioritet in priorities:
+            sql_req = f"""
+                    INSERT INTO priorities_cash 
+                    ('user_id', 'un_sp_id', 'prioritet') 
+                    VALUES(?, ?, ?);
+                    """
+            self.cur.execute(sql_req, prioritet)
+            self.conn.commit()
 
     def set_all_priorities(self):
         priorities = []
@@ -457,6 +507,54 @@ class DBManager:
             enlisted_user.append({"id": k, "fname": fname, "lname": lname, "points": line[2]})
             k += 1
         return enlisted_user
+
+    def get_lessons(self, un_id, code):
+        lessons_necessarily = []
+        lessons_choice = []
+        sql_req = f"""
+                SELECT * 
+                FROM universities_specialties
+                WHERE code = '{code}'
+                AND un_id = {un_id}
+                """
+        specialties_id = list(self.cur.execute(sql_req))[0][0]
+
+        sql_req = f"""
+                SELECT * 
+                FROM specialties_lesson
+                WHERE un_sp_id = {specialties_id}
+                """
+        lessons_line = list(self.cur.execute(sql_req))
+        for lesson in lessons_line:
+            sql_req = f"""
+                            SELECT * 
+                            FROM lesson
+                            WHERE id = {lesson[2]}
+                            """
+            if lesson[3]==1:
+                lessons_necessarily += [list(self.cur.execute(sql_req))[0][2]]
+            else:
+                lessons_choice += [list(self.cur.execute(sql_req))[0][2]]
+        return lessons_necessarily, lessons_choice
+
+    def get_distributed_user(self, user_id):
+        sql_req = f"""
+                SELECT * 
+                FROM enlisted_user
+                WHERE user_id = {user_id}
+                """
+        enlisted_user_id = list(self.cur.execute(sql_req))[0][0]
+        sql_req = f"""
+                SELECT * 
+                FROM universities_specialties
+                WHERE id = {enlisted_user_id}
+                """
+        specialties_lesson_line = list(self.cur.execute(sql_req))[0]
+        un = self.get_university_name(specialties_lesson_line[1])
+        spes = self.get_name_specialties(specialties_lesson_line[2])
+
+        return un, spes
+
 
     @staticmethod
     def hesh(password):
