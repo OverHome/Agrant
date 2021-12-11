@@ -538,22 +538,25 @@ class DBManager:
         return lessons_necessarily, lessons_choice
 
     def get_distributed_user(self, user_id):
-        sql_req = f"""
-                SELECT * 
-                FROM enlisted_user
-                WHERE user_id = {user_id}
-                """
-        enlisted_user_id = list(self.cur.execute(sql_req))[0][0]
-        sql_req = f"""
-                SELECT * 
-                FROM universities_specialties
-                WHERE id = {enlisted_user_id}
-                """
-        specialties_lesson_line = list(self.cur.execute(sql_req))[0]
-        un = self.get_university_name(specialties_lesson_line[1])
-        spes = self.get_name_specialties(specialties_lesson_line[2])
+        try:
+            sql_req = f"""
+                    SELECT * 
+                    FROM enlisted_user
+                    WHERE user_id = {user_id}
+                    """
+            enlisted_user_id = list(self.cur.execute(sql_req))[0][0]
+            sql_req = f"""
+                    SELECT * 
+                    FROM universities_specialties
+                    WHERE id = {enlisted_user_id}
+                    """
+            specialties_lesson_line = list(self.cur.execute(sql_req))[0]
+            un = self.get_university_name(specialties_lesson_line[1])
+            spes = self.get_name_specialties(specialties_lesson_line[2])
 
-        return un, spes
+            return un, spes
+        except:
+            return ("", "")
 
 
     @staticmethod
