@@ -462,6 +462,7 @@ class DBManager:
         return specialties[0]
 
     def set_enlisted_user(self, specialties_users):
+        users_data =[]
         sql_req = f"""
                 DELETE
                 FROM enlisted_user
@@ -471,13 +472,14 @@ class DBManager:
 
         for specialtie in specialties_users:
             for data in specialties_users[specialtie]:
-                sql_req = f"""
-                        INSERT INTO enlisted_user 
-                        ('id', 'user_id', 'points') 
-                        VALUES(?, ?, ?);
-                        """
-                self.cur.execute(sql_req, (specialtie, data[0], data[1]))
-                self.conn.commit()
+                users_data.append((specialtie, data[0], data[1]))
+        sql_req = f"""
+                INSERT INTO enlisted_user 
+                ('id', 'user_id', 'points') 
+                VALUES(?, ?, ?);
+                """
+        self.cur.executemany(sql_req, users_data)
+        self.conn.commit()
 
     def get_enlisted_user(self, un_id, code):
         enlisted_user = []
