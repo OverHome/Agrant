@@ -29,9 +29,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>140</y>
+      <y>170</y>
       <width>801</width>
-      <height>561</height>
+      <height>531</height>
      </rect>
     </property>
     <property name="widgetResizable">
@@ -43,7 +43,7 @@
        <x>0</x>
        <y>0</y>
        <width>799</width>
-       <height>559</height>
+       <height>529</height>
       </rect>
      </property>
     </widget>
@@ -78,18 +78,24 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>60</y>
-      <width>571</width>
-      <height>21</height>
+      <y>100</y>
+      <width>781</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
