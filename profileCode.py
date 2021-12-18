@@ -4,6 +4,7 @@ from PIL.ImageQt import ImageQt
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtWidgets import *
+from PIL import Image
 
 from Agregator import Agregator
 from DBManager import DBManager
@@ -171,12 +172,7 @@ class Settings(QWidget):  # Класс редактирования профил
         self.parent = parent
         self.pixmap = QPixmap()
         self.save_button.clicked.connect(self.apply)
-        self.photo_button.clicked.connect(self.photo)
 
-    def photo(self):
-        fname = \
-            QFileDialog.getOpenFileName(self, 'Выберите изображение', '', 'Изображение (*.png *.xpm *.jpg *.jpeg)')[0]
-        self.pixmap = QPixmap(fname).scaled(200, 200, QtCore.Qt.KeepAspectRatio)
 
     def apply(self):  # Применение введеных настроек
         login = self.parent.login.text()
@@ -185,11 +181,11 @@ class Settings(QWidget):  # Класс редактирования профил
             ok = True
         else:
             self.error_label.setText('Ошибка')
+            ok = False
         if 8 > len(self.password_edit.text()) or len(self.password_edit.text()) > 30:
             self.error_label.setText('Неверная длина пароля!')
         elif self.db.change_password(login, self.password_edit.text()) == 'Пароль изменен' and ok is True:
             self.id.emit(self.db.find_user_line(login)['id'])
-            self.parent.photoLabel.setPixmap(self.pixmap)
             self.close()
         else:
             self.error_label.setText('Ошибка')
@@ -441,6 +437,7 @@ class Profile(QMainWindow):  # Главное окно, класс профил�
         self.exitButton.clicked.connect(lambda: self.hiding(True))
         self.facButton.clicked.connect(lambda: self.specpr())
         self.vuzButton.clicked.connect(lambda: self.univpr())
+        self.photo_button.clicked.connect(lambda: self.photo())
 
         widget = QWidget()  # Поля для прокручиваемых зон
         layout = QGridLayout(widget)
@@ -521,6 +518,17 @@ class Profile(QMainWindow):  # Главное окно, класс профил�
             self.layout1.addWidget(label2, x, 2)
             x += 1
 
+    def photo(self): # Сохранение фотографии
+        fname = \
+            QFileDialog.getOpenFileName(self, 'Выберите изображение', '', 'Изображение (*.png *.xpm *.jpg *.jpeg)')[0]
+        cop = Image.open(fname)
+        cop1 = cop.copy()
+        pic = f'img/{self.id}.jpeg'
+        cop1.save(pic)
+        self.db.set_user_img(self.id, pic)
+        pixmap = QPixmap(self.db.find_user_data(self.id)['img']).scaled(200, 200, QtCore.Qt.KeepAspectRatio)
+        self.photoLabel.setPixmap(pixmap)
+
     def name_update(self, id):  # Загрузка класса со списками учеников на факультете
         if self.sender().text().split('.')[0] == id:
             pass
@@ -537,7 +545,7 @@ class Profile(QMainWindow):  # Главное окно, класс профил�
         elements = [self.photoLabel, self.name_label, self.exitButton, self.editButton,
                     self.login, self.login_label, self.gender, self.gender_label, self.pointsButton, self.facButton,
                     self.vuzButton, self.vuz_label, self.spec_label, self.priorVuz_label, self.priorSpec_label,
-                    self.update_button]
+                    self.update_button, self.photo_button]
         if hide is True:
             for i in elements:
                 i.hide()
@@ -558,6 +566,8 @@ class Profile(QMainWindow):  # Главное окно, класс профил�
         else:
             self.gender.setText('Женский')
         self.login.setText(data['login'])
+        pixmap = QPixmap(data['img']).scaled(200, 200, QtCore.Qt.KeepAspectRatio)
+        self.photoLabel.setPixmap(pixmap)
         self.priorUpdate(self.id)
         self.hiding(False)
 
