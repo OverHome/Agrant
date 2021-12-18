@@ -367,14 +367,12 @@ class Names(QScrollArea):  # Класс для открытия окна с им
     def update(self, id, code):  # Обновление приоритетов
         self.heading.setText(self.db.get_name_specialties(code))
         names = self.db.get_enlisted_user(id, code)
-        x = []
-        for i in self.db.get_lessons(id, code):
-            if len(x) == 0:
-                x += i
-                x[0] = x[0].capitalize()
-            else:
-                x += i
-        self.lesson_label.setText(', '.join(x))
+        x, y = self.db.get_lessons(id, code)
+        x[0] = x[0].capitalize()
+        if len(y) != 0:
+            self.lesson_label.setText(', '.join(x) + ', ' + ' или '.join(y))
+        else:
+            self.lesson_label.setText(', '.join(x))
         l1 = QLabel()
         l2 = QLabel()
         l1.setText('Имя Фамилия')
