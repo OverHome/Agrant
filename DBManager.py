@@ -4,9 +4,10 @@ import operator
 
 
 class DBManager:
-
+    # Инициализация объекта класса взаимодействующего с базой данных
     def __init__(self):
-        self.user_title = ["id", "login", "password", "first_name", "last_name", "gender"]
+        # Константы заголовков для возвращения
+        self.user_title = ["id", "login", "password", "first_name", "last_name", "gender", "img"]
         self.USE_title = ["id", "russian_language", "mathematics", "physics", "chemistry", "history", "social_studies",
                           "ICT", "biology", "geography", "foreign_languages", "literature", "achievements"]
 
@@ -18,7 +19,7 @@ class DBManager:
 
         self.conn = sqlite3.connect("agrant.db")
         self.cur = self.conn.cursor()
-
+    # Метод добавления пользователя в баззу
     def add_user(self, login, password, fname, lname, gender):
         if not self.in_base(login):
             pas_hex = self.hesh(password)
@@ -36,6 +37,7 @@ class DBManager:
         else:
             return "Имя пользователя занято"
 
+    # Метод инициализация пользовательских данных о сданных ЕГЭ
     def add_user_USE(self, login):
         user_line = self.find_user_line(login)
         sql_req = f"""
@@ -46,6 +48,7 @@ class DBManager:
         self.cur.execute(sql_req)
         self.conn.commit()
 
+    # Метод проверки налиция больщователя в базе
     def in_base(self, login):
         sql_req = f"""SELECT * 
         FROM users 
@@ -53,6 +56,7 @@ class DBManager:
         """
         return bool(len(list(self.cur.execute(sql_req))))
 
+    # Метод входа в учетную запись
     def sign_in(self, login, password):
         if self.in_base(login):
             user_line = self.find_user_line(login)
@@ -64,6 +68,7 @@ class DBManager:
         else:
             return "Пользователя не существует"
 
+    # Метод нахождения даннхы пользователя в базе по логину
     def find_user_line(self, login):
         user_dict = {}
         sql_req = f"""
@@ -76,6 +81,7 @@ class DBManager:
             user_dict[self.user_title[i]] = user_line[i]
         return user_dict
 
+    # Метод нахождения даннхы пользователя в базе по id
     def find_user_data(self, id):
         user_dict = {}
         sql_req = f"""
@@ -88,6 +94,7 @@ class DBManager:
             user_dict[self.user_title[i]] = user_line[i]
         return user_dict
 
+    # Метод проверки валидности введенных данных
     def is_user(self, login, fname, lname):
         if self.in_base(login):
             user_line = self.find_user_line(login)
@@ -98,6 +105,7 @@ class DBManager:
         else:
             return "Пользователя не существует"
 
+    # Метод смены пароля
     def change_password(self, login, password):
         if self.in_base(login):
             pas_hex = self.hesh(password)
@@ -112,6 +120,7 @@ class DBManager:
         else:
             return "Пользователя не существует"
 
+    # Метод изменения пользовательсикх данных
     def change_user_data(self, login, fname, lname, gender):
         if self.in_base(login):
             sql_req = f"""
@@ -127,6 +136,7 @@ class DBManager:
         else:
             return "Пользователя не существует"
 
+    # Метод изменения данных ЕГЭ у пользователя
     def set_USE_points(self, id, points):
         sql_req = f"""
         UPDATE USE
@@ -148,6 +158,7 @@ class DBManager:
         self.conn.commit()
         self.set_user_priorities(id)
 
+    # Метод установки приоритетов вузов
     def set_universities_priorities(self, user_id, universities_priorities):
         sql_req = f"""
                 DELETE
@@ -167,6 +178,7 @@ class DBManager:
             self.conn.commit()
         self.set_user_priorities(user_id)
 
+    # Метод установки приоритетов специальностей
     def set_specialties_priorities(self, user_id, specialties_priorities):
         sql_req = f"""
                 DELETE
@@ -186,6 +198,7 @@ class DBManager:
             self.conn.commit()
         self.set_user_priorities(user_id)
 
+    # Метод получения приоритетов вузов
     def get_universities_priorities(self, user_id):
         universities_priorities = []
         sql_req = f"""
@@ -201,6 +214,7 @@ class DBManager:
             universities_priorities += [res]
         return universities_priorities
 
+    # Метод получения приоритетов специальностей
     def get_specialties_priorities(self, user_id):
         specialties_priorities = []
         sql_req = f"""
@@ -216,6 +230,7 @@ class DBManager:
             specialties_priorities += [res]
         return specialties_priorities
 
+    # Метод получения данных ЕГЭ у пользователя
     def get_USE_points(self, id):
         user_dict = {}
         sql_req = f"""
@@ -228,6 +243,7 @@ class DBManager:
             user_dict[self.USE_title[i]] = user_line[i]
         return user_dict
 
+    # Метод получения всех университетов
     def get_universities(self):
         universities_array = []
         sql_req = f"""
@@ -243,6 +259,7 @@ class DBManager:
             universities_array.append(university_dict)
         return universities_array
 
+    # Метод получения всех специальностей в университете
     def get_specialties_in_university(self, un_id):
         specialties_array = []
         sql_req = f"""
@@ -260,6 +277,7 @@ class DBManager:
         specialties_array.sort(key=operator.itemgetter("specialties_code"))
         return specialties_array
 
+    # Метод получения имени университета
     def get_university_name(self, un_id):
         sql_req = f"""
                         SELECT * 
@@ -269,6 +287,7 @@ class DBManager:
         university_name = list(self.cur.execute(sql_req))[0][1]
         return university_name
 
+    # Метод получения всех специальностей
     def get_specialties(self):
         sql_req = f"""
                 SELECT * 
@@ -277,6 +296,7 @@ class DBManager:
         specialties_lines = list(self.cur.execute(sql_req))
         return specialties_lines
 
+    # Метод установки пользовательских приоритетов
     def set_user_priorities(self, user_id):
         priorities = []
         sql_req = f"""
@@ -324,6 +344,7 @@ class DBManager:
             self.cur.execute(sql_req, prioritet)
             self.conn.commit()
 
+    # Метод установки все пользовательских приоритетов (для заполнения пустой базы)
     def set_all_priorities(self):
         priorities = []
         sql_req = f"""
@@ -369,6 +390,7 @@ class DBManager:
             self.cur.execute(sql_req, prioritet)
             self.conn.commit()
 
+    # Метод получения всех пользовательсикх приортитетов
     def get_all_priorities(self):
         user_priorite = {}
         sql_req = f"""
@@ -383,6 +405,7 @@ class DBManager:
                 user_priorite[line[0]] = [line[1]]
         return user_priorite
 
+    # Метод получения всех пользовательсикх данных ЕГЭ
     def get_all_USE(self):
         result = {}
         sql_req = f"""
@@ -399,6 +422,7 @@ class DBManager:
             result[user_line[user][0]] = user_dict
         return result
 
+    # Метод получения всех пользовательей
     def get_all_user_id(self):
         result = []
         sql_req = f"""
@@ -410,6 +434,7 @@ class DBManager:
             result.append(user[0])
         return result
 
+    # Метод получения всех бюджетных мест
     def get_all_budget_place(self):
         result = {}
         sql_req = f"""
@@ -422,6 +447,7 @@ class DBManager:
 
         return result
 
+    # Метод получения данных о предметах ЕГЭ для каждого профиля
     def get_all_specialties_lesson(self):
         subjects = {}
         subjects_of_choice = {}
@@ -443,6 +469,7 @@ class DBManager:
                     subjects_of_choice[line[1]] += [line[2]]
         return subjects, subjects_of_choice
 
+    # Метод получения названия специальности по коду
     def get_name_specialties(self, code):
         sql_req = f"""
                 SELECT * 
@@ -452,6 +479,7 @@ class DBManager:
         specialties = list(self.cur.execute(sql_req))[0]
         return specialties[1]
 
+    # Метод получения кода специальности по названию
     def get_code_specialties(self, name):
         sql_req = f"""
                 SELECT * 
@@ -461,8 +489,9 @@ class DBManager:
         specialties = list(self.cur.execute(sql_req))[0]
         return specialties[0]
 
+    # Метод установки данных о поступающих
     def set_enlisted_user(self, specialties_users):
-        users_data =[]
+        users_data = []
         sql_req = f"""
                 DELETE
                 FROM enlisted_user
@@ -481,6 +510,7 @@ class DBManager:
         self.cur.executemany(sql_req, users_data)
         self.conn.commit()
 
+    # Метод получения данных о поступающих в вузе по специальности
     def get_enlisted_user(self, un_id, code):
         enlisted_user = []
         sql_req = f"""
@@ -510,6 +540,7 @@ class DBManager:
             k += 1
         return enlisted_user
 
+    # Метод установки данных по поступающих
     def get_lessons(self, un_id, code):
         lessons_necessarily = []
         lessons_choice = []
@@ -533,12 +564,13 @@ class DBManager:
                             FROM lesson
                             WHERE id = {lesson[2]}
                             """
-            if lesson[3]==1:
+            if lesson[3] == 1:
                 lessons_necessarily += [list(self.cur.execute(sql_req))[0][2]]
             else:
                 lessons_choice += [list(self.cur.execute(sql_req))[0][2]]
         return lessons_necessarily, lessons_choice
 
+    # Метод получения данных пользователя по определению
     def get_distributed_user(self, user_id):
         try:
             sql_req = f"""
@@ -559,8 +591,17 @@ class DBManager:
             return un, spes
         except:
             return ("", "")
+    #Метод сохраниения картинки в бд
+    def set_user_img(self, user_id, title):
+        sql_req = f"""
+                UPDATE users 
+                SET img = '{title}'
+                WHERE id = '{user_id}'
+                """
+        self.cur.execute(sql_req)
+        self.conn.commit()
 
-
+    # Метод хеширования пароля
     @staticmethod
     def hesh(password):
         return hashlib.sha1(bytes(password, encoding="UTF-8")).hexdigest()
