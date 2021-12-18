@@ -590,7 +590,7 @@ class DBManager:
 
             return un, spes
         except:
-            return ("", "")
+            return ("Нет", "Нет")
     #Метод сохраниения картинки в бд
     def set_user_img(self, user_id, title):
         sql_req = f"""

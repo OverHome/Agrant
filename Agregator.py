@@ -19,6 +19,7 @@ class Agregator:
                         12: "achievements"}
         self.in_progress = False
 
+    # Метод получения данных из базы
     def set_data(self):
         self.db = DBManager()
         self.users_id = self.db.get_all_user_id()
@@ -27,6 +28,7 @@ class Agregator:
         self.universities_specialties_budget_place = self.db.get_all_budget_place()
         self.subjects, self.subjects_of_choice = self.db.get_all_specialties_lesson()
 
+    # Метод получения суммы балов
     def sum_USE(self, user, specialties_id):
         sm = 0
         for i in self.subjects[specialties_id]:
@@ -40,12 +42,14 @@ class Agregator:
         sm += mx + self.users_USE[user][self.lessons[12]]
         return sm
 
+    # Метод запуска алгоритма в потоке
     def start_distribution(self):
         if not self.in_progress:
             self.in_progress = True
             thread_distribution = threading.Thread(target=self.distribution)
             thread_distribution.start()
 
+    # Метод распредиления пользователей по вузам и приоритетам
     def distribution(self):
         self.set_data()
         specialties_users = {}
