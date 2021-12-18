@@ -118,8 +118,8 @@ class Registration(QWidget):  # Класс регистрации
 class Special(QScrollArea):  # Класс настройки баллов пользователя
     def __init__(self, parent):  # Инициализация интерфейса
         super().__init__()
-        self.setWindowTitle('Редактирование баллов')
         self.ui = uic.loadUi('specUi.ui', self)
+        self.setWindowTitle('Редактирование баллов')
         self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
         self.agr = Agregator()
@@ -536,7 +536,8 @@ class Profile(QMainWindow):  # Главное окно, класс профил�
     def hiding(self, hide):  # Метод для переключения профиля между входом/регистрацией и самим профилем
         elements = [self.photoLabel, self.name_label, self.exitButton, self.editButton,
                     self.login, self.login_label, self.gender, self.gender_label, self.pointsButton, self.facButton,
-                    self.vuzButton]
+                    self.vuzButton, self.vuz_label, self.spec_label, self.priorVuz_label, self.priorSpec_label,
+                    self.update_button]
         if hide is True:
             for i in elements:
                 i.hide()
@@ -557,6 +558,7 @@ class Profile(QMainWindow):  # Главное окно, класс профил�
         else:
             self.gender.setText('Женский')
         self.login.setText(data['login'])
+        self.priorUpdate(self.id)
         self.hiding(False)
 
 
