@@ -521,11 +521,12 @@ class Profile(QMainWindow):  # Главное окно, класс профил�
     def photo(self): # Сохранение фотографии
         fname = \
             QFileDialog.getOpenFileName(self, 'Выберите изображение', '', 'Изображение (*.png *.xpm *.jpg *.jpeg)')[0]
-        cop = Image.open(fname)
-        cop1 = cop.copy()
-        pic = f'img/{self.id}.jpeg'
-        cop1.save(pic)
-        self.db.set_user_img(self.id, pic)
+        if fname != '':
+            cop = Image.open(fname)
+            cop1 = cop.copy()
+            pic = f'img/{self.id}.jpeg'
+            cop1.save(pic)
+            self.db.set_user_img(self.id, pic)
         pixmap = QPixmap(self.db.find_user_data(self.id)['img']).scaled(200, 200, QtCore.Qt.KeepAspectRatio)
         self.photoLabel.setPixmap(pixmap)
 
