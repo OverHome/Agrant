@@ -70,7 +70,7 @@ $ cd Agrant
 ```bash 
 $ pip install -r requirements.txt
 ```
-Запускить приложение
+Запустить приложение
 ```bash 
 $ python main.py
 ```
