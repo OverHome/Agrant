@@ -17,8 +17,9 @@ class DBManager:
         self.specialties_priorities_title = ["id", "user_id", "specialties", "priorities"]
         self.universities_priorities_title = ["id", "user_id", "university", "priorities"]
 
-        self.conn = sqlite3.connect("agrant.db")
+        self.conn = sqlite3.connect("Database/agrant.db")
         self.cur = self.conn.cursor()
+
     # Метод добавления пользователя в баззу
     def add_user(self, login, password, fname, lname, gender):
         if not self.in_base(login):
@@ -591,7 +592,8 @@ class DBManager:
             return un, spes
         except:
             return ("Нет", "Нет")
-    #Метод сохраниения картинки в бд
+
+    # Метод сохраниения картинки в бд
     def set_user_img(self, user_id, title):
         sql_req = f"""
                 UPDATE users 

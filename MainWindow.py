@@ -13,7 +13,7 @@ class Login(QWidget):  # Класс входа в аккаунт
 
     def __init__(self):  # Инициализация интерфейса
         super().__init__()
-        uic.loadUi('ui/loginUI.ui', self)
+        uic.loadUi('UI/loginUI.ui', self)
         self.setWindowTitle('Вход')
         self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
@@ -42,7 +42,7 @@ class Login(QWidget):  # Класс входа в аккаунт
 class Registration(QWidget):  # Класс регистрации
     def __init__(self):  # Инициализация интерфейса
         super().__init__()
-        uic.loadUi('ui/registrationUI.ui', self)
+        uic.loadUi('UI/registrationUI.ui', self)
         self.setWindowTitle('Регистрация')
         self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
@@ -117,7 +117,7 @@ class Registration(QWidget):  # Класс регистрации
 class Special(QScrollArea):  # Класс настройки баллов пользователя
     def __init__(self, parent):  # Инициализация интерфейса
         super().__init__()
-        self.ui = uic.loadUi('ui/specUi.ui', self)
+        self.ui = uic.loadUi('UI/specUi.ui', self)
         self.setWindowTitle('Редактирование баллов')
         self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
@@ -162,7 +162,7 @@ class Settings(QWidget):  # Класс редактирования профил
 
     def __init__(self, parent):  # Инициализация класса
         super().__init__()
-        self.ui = uic.loadUi('ui/settingsUI.ui', self)
+        self.ui = uic.loadUi('UI/settingsUI.ui', self)
         self.setWindowTitle('Редактирование данных')
         self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
@@ -212,7 +212,7 @@ class Settings(QWidget):  # Класс редактирования профил
 class SpecPriority(QWidget):  # Класс для приоритета факультетов
     def __init__(self, parent):  # Инициализация класса
         super().__init__()
-        uic.loadUi('ui/specpriorityUI.ui', self)
+        uic.loadUi('UI/specpriorityUI.ui', self)
         self.setWindowTitle('Приоритет факультетов')
         self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
@@ -282,7 +282,7 @@ class SpecPriority(QWidget):  # Класс для приоритета факу�
 class UnivPriority(QWidget):  # Класс для приоритета ВУЗов. класс почти аналогичен предыдущему с минорными изменениями
     def __init__(self, parent):  # Инициализация интерфейса
         super().__init__()
-        uic.loadUi('ui/univpriorityUI.ui', self)
+        uic.loadUi('UI/univpriorityUI.ui', self)
         self.setWindowTitle('Приоритет ВУЗов')
         self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.db = DBManager()
@@ -353,7 +353,7 @@ class UnivPriority(QWidget):  # Класс для приоритета ВУЗо�
 class Names(QScrollArea):  # Класс для открытия окна с именами студентов на факультете
     def __init__(self):  # Инициализация интерфейса
         super().__init__()
-        uic.loadUi('ui/namesUI.ui', self)
+        uic.loadUi('UI/namesUI.ui', self)
         self.setWindowTitle('Список учеников факультета')
         self.db = DBManager()
         widget = QWidget()
@@ -412,7 +412,7 @@ class Names(QScrollArea):  # Класс для открытия окна с им
 class Profile(QMainWindow):  # Главное окно, класс профиля, списка ВУЗов и прочего
     def __init__(self):  # Инициализация интерфейса
         super().__init__()
-        uic.loadUi('ui/profileUI.ui', self)
+        uic.loadUi('UI/profileUI.ui', self)
         self.setWindowTitle('Главное окно')
         self.setFixedSize(1112, 610)
         self.db = DBManager()
